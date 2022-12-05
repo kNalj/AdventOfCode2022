@@ -1,3 +1,5 @@
+import copy
+
 with open("input.txt", "r") as f:
     # do stuff
     state, moves = f.read().split("\n\n")
@@ -14,15 +16,17 @@ for i, row in enumerate(rows[:-1]):
 moves = [[int(c) for c in move.split() if c.isnumeric()] for move in moves]
 
 # part 1
-end_columns = starting_columns.copy()
+end_columns = copy.deepcopy(starting_columns)
+for amount, start, end in moves:
+    end_columns[end-1] += end_columns[start-1][:-amount-1:-1]
+    end_columns[start-1] = end_columns[start-1][:-amount]
+print("".join([column[-1] for column in end_columns]))
+
+# part 2
+end_columns = copy.deepcopy(starting_columns)
 for amount, start, end in moves:
     end_columns[end-1] += end_columns[start-1][-amount:]
     end_columns[start-1] = end_columns[start-1][:-amount]
 print("".join([column[-1] for column in end_columns]))
 
-# part 2
-end_columns = starting_columns.copy()
-for amount, start, end in moves:
-    end_columns[end-1] += end_columns[start-1][:-amount-1:-1]
-    end_columns[start-1] = end_columns[start-1][:-amount]
-print("".join([column[-1] for column in end_columns]))
+
